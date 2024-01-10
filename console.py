@@ -16,25 +16,17 @@ class HBNBCommand(cmd.Cmd):
 
     prompt = '(hbnb) '
 
-def do_quit(self, command):
-    """method to exit the console"""
-    return True
-
-def help_quit(self):
-    """prints help documentation for quit"""
-    print("Exits the program with formatting\n")
-
-def do_EOF(self, arg):
-    """Handles EOF to exit the program"""
-    print()
-    return True
-def help_EOF(self):
-    """ prints help documentation for EOF"""
-    print("Exits the program without formatting\n")
-
-def emptyline(self):
-    """Overides the emptyline method"""
-    return False
+    def do_quit(self, arg):
+        """Quit command to exit the program"""
+        return True
+    
+    def do_EOF(self, arg):
+        """Handles EOF to exit the program"""
+        return True
+    
+    def emptyline(self):
+        """Overides the emptyline method"""
+        return False
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
