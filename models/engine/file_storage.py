@@ -9,7 +9,7 @@ from os.path import isfile
 
 class FileStorage:
     """
-    serirializes instamnces to a JSON FILE and desrializes it
+    serializes instances to a JSON FILE and deserializes it
     """
 
     __file_path = "file.json"
@@ -26,16 +26,16 @@ class FileStorage:
         sets in __objects the obj with key <obj class name>.id
         """
         if obj:
-            key = {}.{}.format(obj.__class__.__name__, obj.id)
+            key = "{}.{}".format(obj.__class__.__name__, obj.id)
             self.__objects[key] = obj
 
     def save(self):
         """
         serializes __objects to the JSON file (path: __file_path)
         """
-        x = {}
+        x_objs = {}
         for key, obj in self.__objects.items():
-            x[key] = obj.to_dict()
+            x_objs[key] = obj.to_dict()
 
         with open(self.__file_path, 'w') as y:
             json.dump(x_objs, y)
@@ -55,21 +55,21 @@ class FileStorage:
             with open(self.__file_path, 'r') as y:
                 n = y.read()
                 if n:
-                    store = json.looads(n)
+                    store = json.loads(n)
                     class_name_map = {
-                            'BaseModel': BaseModel,
-                            'User': User,
-                            'Place': Place,
-                            'State': State,
-                            'Review': Review,
-                            'City': City,
-                            'Amenity': Amenity,
-                            }
+                        'BaseModel': BaseModel,
+                        'User': User,
+                        'Place': Place,
+                        'State': State,
+                        'Review': Review,
+                        'City': City,
+                        'Amenity': Amenity,
+                    }
                     for key, t in store.items():
                         name, obj_id = key.split('.')
                         cls_type = class_name_map.get(name)
                         if cls_type:
                             obj_instance = cls_type(**t)
-                            self.__objects[key] = object_instance
+                            self.__objects[key] = obj_instance
 
-                    return self.objects
+                    return self.__objects
