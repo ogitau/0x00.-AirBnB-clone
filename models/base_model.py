@@ -2,7 +2,8 @@
 """This is the base module for all the classes in this project"""
 import uuid
 from datetime import datetime
-from models import storage
+import models
+from models import HBNBCommand
 
 
 class BaseModel:
@@ -13,7 +14,7 @@ class BaseModel:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
-            storage.new(self)
+            HBNBCommand.storage.new(self)
         else:
             kwargs['updated_at'] = datetime.strptime(kwargs['updated_at'], '%Y-%m-%dT%H:%M:%S.%f')
             kwargs['created_at'] = datetime.strptime(kwargs['created_at'], '%Y-%m-%dT%H:%M:%S.%f')
@@ -28,7 +29,7 @@ class BaseModel:
     def save(self):
         """Updates instances with the current updated_at time changes"""
         self.updated_at = datetime.now()
-        storage.save()
+        HBNBCommand.storage.save()
 
     def to_dict(self):
         """Instances to be converted into dict format"""

@@ -59,7 +59,11 @@ class FileStorage:
                         if name in self.classes:
                             cls_type = self.classes[name]
                             obj_instance = cls_type(**t)
-                            self.__objects[key] = obj_instance
+                            if 'created_at' in value:
+                                obj.created_at = datetime.strptime(value['created_at'], '%Y-%m-%dT%H:%M:%S.%f')
+                                if 'updated_at' in value:
+                                    obj.updated_at = datetime.strptime(value['updated_at'], '%Y-%m-%dT%H:%M:%S.%f')
+                                    self.__objects[key] = obj_instance
 
                     return self.__objects
     @property
