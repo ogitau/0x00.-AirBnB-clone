@@ -5,6 +5,7 @@ class filestorage serializes instances to a JSON file and deserializes
 
 import json
 from os.path import isfile
+from collections import OrderedDict
 
 
 class FileStorage:
@@ -33,14 +34,36 @@ class FileStorage:
         """
         serializes __objects to the JSON file (path: __file_path)
         """
-        x_objs = {}
-        for key, obj in self.__objects.items():
-            x_objs[key] = obj.to_dict()
+        x_objs = OrderedDict()
+        for key, value in self.__objects.items():
+            x_objs[key] = value.to_dict()
 
-        with open(self.__file_path, 'w') as y:
-            json.dump(x_objs, y)
+        with open(self.__file_path, 'w', encoding='utf-8') as y:
+            x_objs = OrderedDict()
+            for key, value in self.__objects.items():
+                x_objs[key] = value.to_dict()
+
+            json.dump(x_objs, y, ensure_ascii=False, indent=4)
 
     def reload(self):
+        """
+        deserializes the JSON file to __objects (only if the JSON file
+        """
+        if isfile(self.__file_path):
+            with open(self.__file_path, 'r', encoding='utf-8') as y:
+                n = y.read()
+                if n:
+                    store = json.loads(n)
+                    for key, t in store.items():
+                        name, obj_id = key.split('.')
+                        if name in self.classes:
+                            cls_type = self.classes[name]
+                            obj_instance = cls_type(**t)
+                            self.__objects[key] = obj_instance
+
+                    return self.__objects
+    @property
+    def classes(self):
         """
         deserializes the JSON file to __objects (only if the JSON file
         """
@@ -51,25 +74,15 @@ class FileStorage:
         from models.city import City
         from models.amenity import Amenity
         from models.review import Review
-        if isfile(self.__file_path):
-            with open(self.__file_path, 'r') as y:
-                n = y.read()
-                if n:
-                    store = json.loads(n)
-                    class_name_map = {
-                        'BaseModel': BaseModel,
-                        'User': User,
-                        'Place': Place,
-                        'State': State,
-                        'Review': Review,
-                        'City': City,
-                        'Amenity': Amenity,
-                    }
-                    for key, t in store.items():
-                        name, obj_id = key.split('.')
-                        cls_type = class_name_map.get(name)
-                        if cls_type:
-                            obj_instance = cls_type(**t)
-                            self.__objects[key] = obj_instance
 
-                    return self.__objects
+
+        classes = {
+                'BaseModel': BaseModel,
+                'User': User,
+                'Place': Place,
+                'State': State,
+                'Review': Review,
+                'City': City,
+                'Amenity': Amenity,
+                }
+        return classes
