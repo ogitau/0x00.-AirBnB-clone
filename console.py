@@ -1,14 +1,13 @@
 #!/usr/bin/python3
-""" module that contains the entry point of the cmd interpreter"""
+""" module that contains the entry point ofthe program"""
 
-import sys
-import re
 import cmd
-from models.engine.file_storage import FileStorage 
+import sys
 from models.base_model import BaseModel
+from models.__init__ import storage
 from models.user import User
-from models.state import State
 from models.place import Place
+from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
@@ -90,9 +89,10 @@ class HBNBCommand(cmd.Cmd):
     
     def do_create(self, line):
         """Creates a new instance of BM, saves to JSON and prints the id """
+        from models import storage
         if not line:
             print("** class name missing **")
-        elif line not in HBNBCommand.storage.classes:
+        elif line not in storage.classes:
             print("** class doesn't exist **")
         else:
             result = storage.classes[line]()
