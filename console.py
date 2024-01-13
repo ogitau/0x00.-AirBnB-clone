@@ -57,12 +57,12 @@ class HBNBCommand(cmd.Cmd):
                 _id = pline[0].replace('\"', '')
                 pline = pline[2].strip()
                 if pline:
-                    if pline[0] == '{' and pline[-1] == '}'\
-                            and type(eval(pline)) == dict:
+                    if _cmd == 'create':
                         _args = pline
-                    else:
-                        _args = pline.replace(',', '')
-                        line = ' '.join([_cmd, _cls, _id, _args])
+                        line = f'{_cmd} {_cls} {_args}'
+                    elif _cmd == 'show' or _cmd == 'destroy':
+                        _args = _id
+                        line = f'{_cmd} {_cls} {_args}'
 
         except Exception as mess:
             pass
