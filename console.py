@@ -11,7 +11,7 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-
+from models.engine.file_storage import FileStorage
 
 class HBNBCommand(cmd.Cmd):
     """contains functionality of HBNB console"""
@@ -96,7 +96,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
         else:
             result = storage.classes[line]()
-            models.storage.save()
+            storage.save()
             print(result.id)
 
     def do_show(self, args):
@@ -167,10 +167,10 @@ class HBNBCommand(cmd.Cmd):
                 return
             for a, b in HBNBCommand.storage._FileStorage__objects.items():
                 if a.split('.')[0] == args:
-                    print_list.append(str(v))
+                    print_list.append(str(b))
         else:
             for a, b in HBNBCommand.storage._FileStorage__objects.items():
-                print_list.append(str(v))
+                print_list.append(str(b))
 
         print(print_list)
 
