@@ -164,10 +164,10 @@ class HBNBCommand(cmd.Cmd):
                 return
             for a, b in HBNBCommand.storage._FileStorage__objects.items():
                 if a.split('.')[0] == args:
-                    print_list.append(str(v))
+                    print_list.append(str(b))
         else:
             for a, b in HBNBCommand.storage._FileStorage__objects.items():
-                print_list.append(str(v))
+                print_list.append(str(b))
 
         print(print_list)
 

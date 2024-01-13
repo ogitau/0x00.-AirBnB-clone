@@ -4,6 +4,7 @@ class filestorage serializes instances to a JSON file and deserializes
 """
 
 import json
+from datetime import datetime
 from os.path import isfile
 from collections import OrderedDict
 
@@ -43,27 +44,33 @@ class FileStorage:
 
     def reload(self):
         """Deserializes the JSON file to __objects (only if the JSON file exists)"""
-    if isfile(self.__file_path):
-        with open(self.__file_path, 'r', encoding='utf-8') as y:
-            n = y.read()
-            if n:
-                try:
-                    store = json.loads(n)
-                    for key, t in store.items():
-                        name, obj_id = key.split('.')
-                        if name in self.classes:
-                            cls_type = self.classes[name]
-                            obj_instance = cls_type(**t)
-                            if 'created_at' in t:
-                                obj_instance.created_at = datetime.strptime(t['created_at'], '%Y-%m-%dT%H:%M:%S.%f')
-                            if 'updated_at' in t:
-                                obj_instance.updated_at = datetime.strptime(t['updated_at'], '%Y-%m-%dT%H:%M:%S.%f')
-                            self.__objects[key] = obj_instance
+        if isfile(self.__file_path):
+            with open(self.__file_path, 'r', encoding='utf-8') as y:
+                n = y.read()
+                if n:
+                    try:
+                        store = json.loads(n)
+                        for key, t in store.items():
+                            name, obj_id = key.split('.')
+                            if name in self.classes:
+                                cls_type = self.classes[name]
+                                obj_instance = cls_type(**t)
+                                try:
+                                    if 'created_at' in t:
+                                        obj_instance.created_at = datetime.strptime(t['created_at'], '%Y-%m-%dT%H:%M:%S.%f')
+                                        if 'updated_at' in t:
+                                            obj_instance.updated_at = datetime.strptime(t['updated_at'], '%Y-%m-%dT%H:%M:%S.%f')
+                                            self.__objects[key] = obj_instance
+                                except ValueError as e:
+                                    print(f"Error parsing datetime strings: {e}. Using current time.")
+                                    obj_instance.created_at = datetime.now()
+                                    obj_instance.updated_at = datetime.now()
+                                    self.__objects[key] = obj_instance
 
-                except json.JSONDecodeError as e:
-                    print(f"Error decoding JSON: {e}")
+                    except json.JSONDecodeError as e:
+                                        print(f"Error decoding JSON: {e}")
 
-    return self.__objects
+                                        return self.__objects
 
     @property
     def classes(self):
