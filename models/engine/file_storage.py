@@ -34,7 +34,7 @@ class FileStorage:
         """
         serializes __objects to the JSON file (path: __file_path)
         """
-        x_objs = OrderedDict()
+      x_objs = OrderedDict()
         for key, value in self.__objects.items():
             x_objs[key] = value.to_dict()
 

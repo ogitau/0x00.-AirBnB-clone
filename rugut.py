@@ -11,7 +11,7 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-from models.engine.file_storage import FileStorage
+
 
 class HBNBCommand(cmd.Cmd):
     """contains functionality of HBNB console"""
@@ -96,32 +96,35 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
         else:
             result = storage.classes[line]()
-            storage.save()
+            models.storage.save()
             print(result.id)
 
-    def do_show(self, arg):
-        """
-        Retrieve an instance based on its ID: <class name>.show(<id>).
-        """
-        args = arg.split()
-        if len(args) == 0:
+    def do_show(self, args):
+        """method to show objects"""
+        n = args.partition(" ")
+        ob_name = n[0]
+        ob_id = n[2]
+
+        if ob_id and ' ' in ob_id:
+            ob_id = ob_id.partition(' ')[0]
+
+        if not ob_name:
             print("** class name missing **")
             return
-        if args[0] not in self.classes:
-            print("** class doesn't exist **")
+
+        if ob_name not in HBNBCommand.classes:
+            print("** class doen't exist **")
             return
-        if len(args) < 2:
+
+        if not ob_id:
             print("** instance id missing **")
             return
 
-        class_name = args[0]
-        instance_id = args[1]
-        key = "{}.{}".format(class_name, instance_id)
+        key = ob_name + "." + ob_id
 
-        if key in models.storage.all():
-            instance = models.storage.all()[key]
-            print(instance)
-        else:
+        try:
+            print(HBNBCommand.storage._FileStorage__objects[key])
+        except KeyError:
             print("** no instance found **")
 
     def do_destroy(self, args):
