@@ -54,22 +54,25 @@ class FileStorage:
                             name, obj_id = key.split('.')
                             if name in self.classes:
                                 cls_type = self.classes[name]
-                                obj_instance = cls_type(**t)
+                                obj_i = cls_type(**t)
                                 try:
                                     if 'created_at' in t:
-                                        obj_instance.created_at = datetime.strptime(
-                                            t['created_at'], '%Y-%m-%dT%H:%M:%S.%f')
+                                        obj_i.created_at = datetime.strptime(
+                                            t['created_at'],
+                                            '%Y-%m-%dT%H:%M:%S.%f')
                                     if 'updated_at' in t:
-                                        obj_instance.updated_at = datetime.strptime(
-                                                t['updated_at'], '%Y-%m-%dT%H:%M:%S.%f'
+                                        obj_i.updated_at = datetime.strptime(
+                                                t['updated_at'],
+                                                '%Y-%m-%dT%H:%M:%S.%f'
                                                 )
-                                        self.__objects[key] = obj_instance
+                                        self.__objects[key] = obj_i
                                 except ValueError as e:
-                                    print(f"Error parsing datetime strings:"
+                                    print(
+                                            f"Error parsing datetime strings:"
                                             f"{e}. Using current time.")
-                                    obj_instance.created_at = datetime.now()
-                                    obj_instance.updated_at = datetime.now()
-                                    self.__objects[key] = obj_instance
+                                    obj_i.created_at = datetime.now()
+                                    obj_i.updated_at = datetime.now()
+                                    self.__objects[key] = obj_i
 
                     except json.JSONDecodeError as e:
                         print(f"Error decoding JSON: {e}")
