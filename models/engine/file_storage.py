@@ -43,7 +43,7 @@ class FileStorage:
             json.dump(x_objs, y, ensure_ascii=False, indent=4)
 
     def reload(self):
-        """Deserializes the JSON file to __objects (only if the JSON file exists)"""
+        """Deserializes the JSON file to __objects (only if the JSON exista)"""
         if isfile(self.__file_path):
             with open(self.__file_path, 'r', encoding='utf-8') as y:
                 n = y.read()
@@ -57,20 +57,23 @@ class FileStorage:
                                 obj_instance = cls_type(**t)
                                 try:
                                     if 'created_at' in t:
-                                        obj_instance.created_at = datetime.strptime(t['created_at'], '%Y-%m-%dT%H:%M:%S.%f')
-                                        if 'updated_at' in t:
-                                            obj_instance.updated_at = datetime.strptime(t['updated_at'], '%Y-%m-%dT%H:%M:%S.%f')
+                                        obj_instance.created_at = datetime.strptime(
+                                            t['created_at'], '%Y-%m-%dT%H:%M:%S.%f')
+                                    if 'updated_at' in t:
+                                        obj_instance.updated_at = datetime.strptime(
+                                                t['updated_at'], '%Y-%m-%dT%H:%M:%S.%f'
+                                                )
                                             self.__objects[key] = obj_instance
                                 except ValueError as e:
-                                    print(f"Error parsing datetime strings: {e}. Using current time.")
+                                    print(f"Error parsing datetime strings: /
+                                            {e}. Using current time.")
                                     obj_instance.created_at = datetime.now()
                                     obj_instance.updated_at = datetime.now()
                                     self.__objects[key] = obj_instance
 
                     except json.JSONDecodeError as e:
-                                        print(f"Error decoding JSON: {e}")
-
-                                        return self.__objects
+                        print(f"Error decoding JSON: {e}")
+                        return self.__objects
 
     @property
     def classes(self):
@@ -85,7 +88,6 @@ class FileStorage:
         from models.city import City
         from models.amenity import Amenity
         from models.review import Review
-
 
         classes = {
                 'BaseModel': BaseModel,

@@ -9,7 +9,6 @@ from models import storage
 
 class BaseModel:
     """Base class for all models"""
-    
     def __init__(self, *args, **kwargs):
         """Instantiation of a new model"""
         if not kwargs:
@@ -19,19 +18,22 @@ class BaseModel:
             storage.new(self)
         else:
             try:
-                kwargs['updated_at'] = datetime.strptime(kwargs['updated_at'], '%Y-%m-%dT%H:%M:%S.%f')
-                kwargs['created_at'] = datetime.strptime(kwargs['created_at'], '%Y-%m-%dT%H:%M:%S.%f')
+                kwargs['updated_at'] = datetime.strptime(kwargs /
+                    ['updated_at'], '%Y-%m-%dT%H:%M:%S.%f')
+                kwargs['created_at'] = datetime.strptime(kwargs['created_at'],/
+                        '%Y-%m-%dT%H:%M:%S.%f')
             except ValueError:
                 try:
-                    kwargs['updated_at'] = datetime.strptime(kwargs['updated_at'], '%Y-%m-%dT%H:%M:%S')
+                    kwargs['updated_at'] = datetime.strptime(kwargs['updated_at'], /
+                            '%Y-%m-%dT%H:%M:%S')
                     kwargs['created_at'] = datetime.strptime(kwargs['created_at'], '%Y-%m-%dT%H:%M:%S')
                 except ValueError:
-                    print("Error parsing datetime strings. Using current time.")
+                    print("Error parsing datetime strings./
+                            Using current time.")
                     kwargs['updated_at'] = datetime.now()
                     kwargs['created_at'] = datetime.now()
             del kwargs['__class__']
             self.__dict__.update(kwargs)
-
 
     def __str__(self):
         """Returns a string representation of the instance"""
@@ -50,4 +52,3 @@ class BaseModel:
         dictionary['created_at'] = self.created_at.isoformat()
         dictionary['updated_at'] = self.updated_at.isoformat()
         return dictionary
-

@@ -13,11 +13,12 @@ from models.amenity import Amenity
 from models.review import Review
 from models.engine.file_storage import FileStorage
 
+
 class HBNBCommand(cmd.Cmd):
     """contains functionality of HBNB console"""
 
     prompt = '(hbnb) 'if sys.__stdin__.isatty() else ''
-    
+
     storage = FileStorage()
 
     classes = {
@@ -86,7 +87,7 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """Overides the emptyline method"""
         return False
-    
+
     def do_create(self, line):
         """Creates a new instance of BM, saves to JSON and prints the id """
         from models import storage
@@ -173,8 +174,6 @@ class HBNBCommand(cmd.Cmd):
                 print_list.append(str(b))
 
         print(print_list)
-
-
 
     def do_update(self, args):
         """updates objects with new info"""
