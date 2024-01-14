@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """ module that contains the entry point ofthe program"""
 
+import re
 import cmd
 import sys
 from models.base_model import BaseModel
@@ -28,47 +29,54 @@ class HBNBCommand(cmd.Cmd):
             }
     dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
     types = {
-             'number_rooms': int, 'number_bathrooms': int,
-             'max_guest': int, 'price_by_night': int,
-             'latitude': float, 'longitude': float
+            'number_rooms': int, 'number_bathrooms': int,
+            'max_guest': int, 'price_by_night': int,
+            'latitude': float, 'longitude': float
             }
 
-    def preloop(self):
-        """Prints if isatty is false"""
-        if not sys.__stdin__.isatty():
-            print('(hbnb)')
+    def parseline(self, line):
+        """parses commands to onecmd for execution"""
+        prt_ln = line.split('.')
+        if len(prt_ln) > 1:
+            arg = '.'.join(prt_ln[:-1])
+            _cmd = prt_ln[-1]
+            if '(' in _cmd and ')' in _cmd:
+                def pr_cnt(txt):
+                    return bool(re.search(r'\([^)\s]+\)', txt))
+                if pr_cnt(_cmd):
+                    _cmd = _cmd.replace('(', ' ').replace(')', '')
+                _cmd = _cmd.replace('(', '').replace(')', '')
+            else:
+                _cmd += '()'
+        else:
+            _cmd, _, arg = line.partition(' ')
+        return _cmd, arg
 
-    def precmd(self, line):
-        """Reformat command line for advanced command syntax"""
-        _cmd = _cls = _id = _args = ''
-
-        if not ('.' in line and '(' in line and ')' in line):
-            return line
-
+    def onecmd(self, line):
+        """execution of the parseline module commands"""
         try:
-            pline = line[:]
-            _cls = pline[:pline.find('.')]
-            _cmd = pline[pline.find('.') + 1:pline.find('(')]
-            if _cmd not in HBNBCommand.dot_cmds:
-                raise Exception
+            cmd, args = self.parseline(line)
+        except ValueError:
+            return self.emptyline()
+        if not line:
+            return self.emptyline()
+        if cmd == '':
+            return self.emptyline()
+        try:
+            num_cmd = cmd.split(' ')
+            if len(num_cmd) > 1:
+                cmd = cmd_num[0]
+                args = args + ' ' + num_cmd[1]
+            getter = getattr(self, 'do_' + cmd)
+        
+        except AttributeError:
+            print('* Unknown syntax: %s' % line)
+            getter = None
+        if getter:
+            return getter(args)
+        else:
+            return self.emptyline()
 
-            pline = pline[pline.find('(') + 1:pline.find(')')]
-            if pline:
-                pline = pline.partition(', ')
-                _id = pline[0].replace('\"', '')
-                pline = pline[2].strip()
-                if pline:
-                    if _cmd == 'create':
-                        _args = pline
-                        line = f'{_cmd} {_cls} {_args}'
-                    elif _cmd == 'show' or _cmd == 'destroy':
-                        _args = _id
-                        line = f'{_cmd} {_cls} {_args}'
-
-        except Exception as mess:
-            pass
-        finally:
-            return line
 
     def postcmd(self, stop, line):
         """Prints if isatty is false"""

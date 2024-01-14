@@ -6,7 +6,7 @@ from models.user import User
 from datetime import datetime
 import os
 from models import storage
-
+from models.base_model import BaseModel
 
 class TestUser(unittest.TestCase):
     """Test class for the User model
@@ -20,6 +20,10 @@ class TestUser(unittest.TestCase):
         cls.user_instance_1.save()
         cls.dict_n = cls.user_instance_1.to_dict()
         cls.user_instance_2 = User(**cls.dict_m)
+
+    def test_inheritance(self):
+        """test for correct inheritance from basemodel"""
+        self.assertTrue(issubclass(User, BaseModel))
 
     def test_updated_at(self):
         """Verify that the save method modifies the updated_at instance attribute
