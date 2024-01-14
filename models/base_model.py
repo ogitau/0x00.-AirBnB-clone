@@ -18,18 +18,19 @@ class BaseModel:
             storage.new(self)
         else:
             try:
-                kwargs['updated_at'] = datetime.strptime(kwargs /
-                    ['updated_at'], '%Y-%m-%dT%H:%M:%S.%f')
-                kwargs['created_at'] = datetime.strptime(kwargs['created_at'],/
-                        '%Y-%m-%dT%H:%M:%S.%f')
+                kwargs['updated_at'] = datetime.strptime(
+                        kwargs['created_at'], '%Y-%m-%dT%H:%M:%S.%f')
+                kwargs['created_at'] = datetime.strptime(
+                        kwargs['created_at'], '%Y-%m-%dT%H:%M:%S.%f')
             except ValueError:
                 try:
-                    kwargs['updated_at'] = datetime.strptime(kwargs['updated_at'], /
-                            '%Y-%m-%dT%H:%M:%S')
-                    kwargs['created_at'] = datetime.strptime(kwargs['created_at'], '%Y-%m-%dT%H:%M:%S')
+                    kwargs['updated_at'] = datetime.strptime(
+                            kwargs['updated_at'], '%Y-%m-%dT%H:%M:%S')
+                    kwargs['created_at'] = datetime.strptime(
+                            kwargs['created_at'], '%Y-%m-%dT%H:%M:%S')
                 except ValueError:
-                    print("Error parsing datetime strings./
-                            Using current time.")
+                    print(
+                    "Error parsing datetime strings.Using current time.")
                     kwargs['updated_at'] = datetime.now()
                     kwargs['created_at'] = datetime.now()
             del kwargs['__class__']

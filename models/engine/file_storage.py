@@ -63,10 +63,10 @@ class FileStorage:
                                         obj_instance.updated_at = datetime.strptime(
                                                 t['updated_at'], '%Y-%m-%dT%H:%M:%S.%f'
                                                 )
-                                            self.__objects[key] = obj_instance
+                                        self.__objects[key] = obj_instance
                                 except ValueError as e:
-                                    print(f"Error parsing datetime strings: /
-                                            {e}. Using current time.")
+                                    print(f"Error parsing datetime strings:"
+                                            f"{e}. Using current time.")
                                     obj_instance.created_at = datetime.now()
                                     obj_instance.updated_at = datetime.now()
                                     self.__objects[key] = obj_instance
